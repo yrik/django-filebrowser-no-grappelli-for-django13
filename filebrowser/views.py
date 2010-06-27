@@ -17,6 +17,8 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
 from django.dispatch import Signal
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.utils.encoding import smart_str
+
 try:
     # django SVN
     from django.views.decorators.csrf import csrf_exempt
@@ -204,6 +206,7 @@ def mkdir(request):
     }, context_instance=Context(request))
 mkdir = staff_member_required(never_cache(mkdir))
 
+
 # upload signals
 filebrowser_pre_upload = Signal(providing_args=["path", "file"])
 filebrowser_post_upload = Signal(providing_args=["path", "file"])
@@ -263,6 +266,7 @@ def upload(request):
     
 upload = staff_member_required(never_cache(upload))
 
+
 # delete signals
 filebrowser_pre_delete = Signal(providing_args=["path", "filename"])
 filebrowser_post_delete = Signal(providing_args=["path", "filename"])
@@ -301,7 +305,7 @@ def delete(request):
                     except:
                         pass
                 # DELETE FILE
-                os.unlink(os.path.join(abs_path, filename))
+                os.unlink(smart_str(os.path.join(abs_path, filename)))
                 # POST DELETE SIGNAL
                 filebrowser_post_delete.send(sender=request, path=path, filename=filename)
                 # MESSAGE & REDIRECT
