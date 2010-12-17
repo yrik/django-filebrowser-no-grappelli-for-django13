@@ -213,7 +213,7 @@ filebrowser_post_upload = Signal(providing_args=["path", "file"])
 
 def upload(request):
     """
-    Multipe File Upload.
+    Multiple File Upload.
     """
 
     from django.forms.formsets import formset_factory
@@ -227,7 +227,14 @@ def upload(request):
         return HttpResponseRedirect(reverse("fb_browse"))
     abs_path = os.path.join(MEDIA_ROOT, DIRECTORY, path)
 
-    import ImageFile
+    if STRICT_PIL:
+        from PIL import ImageFile
+    else:
+        try:
+            from PIL import ImageFile
+        except ImportError:
+            import ImageFile
+
     ImageFile.MAXBLOCK = IMAGE_MAXBLOCK # default is 64k
 
     from filebrowser.forms import UploadForm, BaseUploadFormSet
