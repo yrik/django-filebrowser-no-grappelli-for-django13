@@ -423,6 +423,54 @@ def rename(request):
 rename = staff_member_required(never_cache(rename))
 
 
+
+def edit(request):
+    """
+    Edit existing File.
+    """
+
+    from filebrowser.forms import EditForm
+    # QUERY / PATH CHECK
+    query = request.GET
+    path = get_path(query.get('dir', ''))
+    filename = get_file(query.get('dir', ''), query.get('filename', ''))
+    if path is None or filename is None:
+        if path is None:
+            msg = _('The requested Folder does not exist.')
+        else:
+            msg = _('The requested File does not exist.')
+        request.user.message_set.create(message=msg)
+        return HttpResponseRedirect(reverse("fb_browse"))
+    abs_path = os.path.join(MEDIA_ROOT, DIRECTORY, path)
+    file_extension = os.path.splitext(filename)[1].lower()
+
+    if request.method == 'POST':
+        form = EditForm(abs_path, filename, file_extension, request.POST)
+        if form.is_valid():
+            try:
+                form.save()
+                # MESSAGE & REDIRECT
+                msg = _('Edit action was successful.')
+                request.user.message_set.create(message=msg)
+                redirect_url = reverse("fb_browse") + query_helper(query, "", "filename")
+                return HttpResponseRedirect(redirect_url)
+            except OSError, (errno, strerror):
+                form.errors['name'] = forms.util.ErrorList([_('Error.')])
+    else:
+        form = EditForm(abs_path, filename, file_extension)
+
+    return render_to_response('filebrowser/edit.html', {
+        'form': form,
+        'query': query,
+        'file_extension': file_extension,
+        'title': _(u'Edit "%s"') % filename,
+        'settings_var': get_settings_var(),
+        'breadcrumbs': get_breadcrumbs(query, path),
+        'breadcrumbs_title': _(u'Edit')
+    }, context_instance=Context(request))
+rename = staff_member_required(never_cache(rename))
+
+
 def versions(request):
     """
     Show all Versions for an Image according to ADMIN_VERSIONS.

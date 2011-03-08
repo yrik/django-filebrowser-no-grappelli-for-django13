@@ -81,8 +81,17 @@
         <!-- DATE -->
         <td>{{ file.datetime|date:"N j, Y" }}</td>
 
+        <!-- EDIT -->
+        <td class="fb_icon">
+        {% if file.filetype == "Code" %}
+          <a href="{% url fb_edit %}{% query_string %}&amp;filename={{ file.filename }}" class="fb_editlink" title="{% trans 'Rename' %}"><img src="{{ settings_var.URL_FILEBROWSER_MEDIA }}img/filebrowser_icon_rename.gif" />{% trans "Edit" %}</a>
+        {% else %}
+          {% trans "No editable" %}
+        {% endif %}
+        </td>
+
         <!-- RENAME -->
-        <td class="fb_icon"><a href="{% url fb_rename %}{% query_string %}&amp;filename={{ file.filename }}" class="fb_renamelink" title="{% trans 'Rename' %}"><img src="{{ settings_var.URL_FILEBROWSER_MEDIA }}img/filebrowser_icon_rename.gif" /></a></td>
+        <td class="fb_icon"><a href="{% url fb_rename %}{% query_string %}&amp;filename={{ file.filename }}" class="fb_renamelink" title="{% trans 'Rename' %}"><img src="{{ settings_var.URL_FILEBROWSER_MEDIA }}img/filebrowser_icon_rename.gif" />{% trans "Rename" %}</a></td>
 
         <!-- DELETE -->
         {% if results_var.delete_total %}
