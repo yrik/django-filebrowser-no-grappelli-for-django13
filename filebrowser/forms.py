@@ -76,12 +76,13 @@ class EditForm(forms.Form):
         self.filename = filename
         self.file_extension = file_extension
         super(EditForm, self).__init__(*args, **kwargs)
-        self.fields['content'].initial = open(os.path.join(path, filename), 'r').read()
+        file_content = open(os.path.join(path, filename), 'r').read()
+        self.fields['content'].initial = file_content.decode(settings.DEFAULT_CHARSET)
 
     def save(self):
         content = self.cleaned_data['content']
         out_file = open(os.path.join(self.path, self.filename), 'w')
-        out_file.write(content.encode(settings.DEFAULT_CHARSET))
+        out_file.write(content.encode(settings.DEFAULT_CHARSET).replace("\r", ""))
         out_file.close()
 
 
