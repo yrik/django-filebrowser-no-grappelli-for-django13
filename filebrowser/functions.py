@@ -235,9 +235,7 @@ def handle_file_upload(path, file):
     """
     Handle File Upload.
     """
-    
     file_path = os.path.join(path, file.name)
-    import ipdb; ipdb.set_trace()
     storage = FileSystemStorage(location=MEDIA_ROOT)
     uploadedfile = storage.save(file_path, file)
     return uploadedfile
