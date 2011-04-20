@@ -30,7 +30,7 @@ class FileObject(object):
     """
     
     def __init__(self, path):
-        self.path = path
+        self.path = force_unicode(path)
         self.url_rel = path.replace("\\","/")
         self.head = os.path.split(path)[0]
         self.filename = os.path.split(path)[1]
@@ -42,8 +42,8 @@ class FileObject(object):
         Filesize.
         """
         path = force_unicode(self.path)
-        if os.path.isfile(os.path.join(MEDIA_ROOT, path)) or os.path.isdir(os.path.join(MEDIA_ROOT, path)):
-            return os.path.getsize(os.path.join(MEDIA_ROOT, path))
+        if os.path.isfile(os.path.join(MEDIA_ROOT, self.path)) or os.path.isdir(os.path.join(MEDIA_ROOT, self.path)):
+            return os.path.getsize(os.path.join(MEDIA_ROOT, self.path))
         return ""
     filesize = property(_filesize)
     
