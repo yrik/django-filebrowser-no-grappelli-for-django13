@@ -12,7 +12,7 @@ setup(
     package_data = {'filebrowser': ['templates/filebrowser/*.html',
                                     'templates/filebrowser/include/*',
                                     'locale/*/LC_MESSAGES/*',
-                                    'media/filebrowser/*/*'],
+                                    'static/filebrowser/*/*'],
                     },
     zip_safe=False,
     classifiers=[
