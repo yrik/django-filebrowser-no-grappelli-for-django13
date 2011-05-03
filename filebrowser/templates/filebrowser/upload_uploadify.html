@@ -36,7 +36,7 @@
         <fieldset class="module aligned">
           <div class="form-row">
             {% load uploadify_tags %}
-            {% multi_file_upload 'filebrowser' 'file' %}<br/>
+            {% multi_file_upload sender='filebrowser' fileDataName='file' %}<br/>
             <a href="{% url fb_upload_old %}">{% trans "Use old uploader without flash" %}</a>
             <script type="text/javascript">
             $('#uploadify').bind('allUploadsComplete', function(data){
