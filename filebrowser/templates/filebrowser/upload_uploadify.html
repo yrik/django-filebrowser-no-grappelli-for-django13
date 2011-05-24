@@ -37,7 +37,7 @@
           <div class="form-row">
             {% load uploadify_tags %}
             {% multi_file_upload sender='filebrowser' fileDataName='file' %}<br/>
-            <a href="{% url fb_upload_old %}">{% trans "Use old uploader without flash" %}</a>
+            <a href="{% url fb_upload %}">{% trans "Use old uploader without flash" %}</a>
             <script type="text/javascript">
             $('#uploadify').bind('allUploadsComplete', function(data){
                 $('#upload').val("{% trans "Return to choose files" %}");

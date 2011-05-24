@@ -123,4 +123,9 @@ _('Document')
 _('Audio')
 _('Code')
 
-
+# use django-uploadify
+USE_UPLOADIFY = getattr(settings, 'FILEBROWSER_USE_UPLOADIFY', True)
+try:
+    import uploadify
+except:
+    USE_UPLOADIFY = False

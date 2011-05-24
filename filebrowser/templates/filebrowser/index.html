@@ -46,7 +46,11 @@
     {% block object-tools %}
     <ul class="object-tools">
         <li><a href="{% url fb_mkdir %}{% query_string '' 'p' %}">{% trans "New Folder" %}</a></li>
+        {% if settings_var.USE_UPLOADIFY %}
+        <li><a href="{% url fb_upload_flash %}{% query_string '' 'p' %}" class="focus">{% trans "Upload" %}</a></li>
+        {% else %}
         <li><a href="{% url fb_upload %}{% query_string '' 'p' %}" class="focus">{% trans "Upload" %}</a></li>
+        {% endif %}
     </ul>
     {% endblock %}
     <div class="module filtered" id="changelist">
