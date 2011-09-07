@@ -54,7 +54,6 @@ def browse(request):
     
     if path is None:
         msg = _('The requested Folder does not exist.')
-        request.user.message_set.create(message=msg)
         if directory is None:
             # The DIRECTORY does not exist, raise an error to prevent eternal redirecting.
             raise ImproperlyConfigured, _("Error finding Upload-Folder. Maybe it does not exist?")
@@ -164,7 +163,6 @@ def mkdir(request):
     path = get_path(query.get('dir', ''))
     if path is None:
         msg = _('The requested Folder does not exist.')
-        request.user.message_set.create(message=msg)
         return HttpResponseRedirect(reverse("fb_browse"))
     abs_path = os.path.join(MEDIA_ROOT, DIRECTORY, path)
     
@@ -182,7 +180,6 @@ def mkdir(request):
                 filebrowser_post_createdir.send(sender=request, path=path, dirname=form.cleaned_data['dir_name'])
                 # MESSAGE & REDIRECT
                 msg = _('The Folder %s was successfully created.') % (form.cleaned_data['dir_name'])
-                request.user.message_set.create(message=msg)
                 # on redirect, sort by date desc to see the new directory on top of the list
                 # remove filter in order to actually _see_ the new folder
                 # remove pagination
@@ -221,8 +218,7 @@ def upload(request):
     query = request.GET
     path = get_path(query.get('dir', ''))
     if path is None:
-        msg = _('The requested Folder does not exist.')
-        request.user.message_set.create(message=msg)
+        msg = _('The requested Folder does not exist.')        
         return HttpResponseRedirect(reverse("fb_browse"))
     abs_path = os.path.join(MEDIA_ROOT, DIRECTORY, path)
 
@@ -253,8 +249,7 @@ def upload(request):
                     # POST UPLOAD SIGNAL
                     filebrowser_post_upload.send(sender=request, path=abs_path, file=uploadedfile)
             # MESSAGE & REDIRECT
-            msg = _('Upload successful.')
-            request.user.message_set.create(message=msg)
+            msg = _('Upload successful.')            
             # on redirect, sort by date desc to see the uploaded files on top of the list
             redirect_url = reverse("fb_browse") + query_helper(query, "ot=desc,o=date", "ot,o")
             return HttpResponseRedirect(redirect_url)
@@ -293,7 +288,6 @@ def delete(request):
             msg = _('The requested Folder does not exist.')
         else:
             msg = _('The requested File does not exist.')
-        request.user.message_set.create(message=msg)
         return HttpResponseRedirect(reverse("fb_browse"))
     abs_path = os.path.join(MEDIA_ROOT, DIRECTORY, path)
     
@@ -316,7 +310,6 @@ def delete(request):
                 filebrowser_post_delete.send(sender=request, path=path, filename=filename)
                 # MESSAGE & REDIRECT
                 msg = _('The file %s was successfully deleted.') % (filename.lower())
-                request.user.message_set.create(message=msg)
                 redirect_url = reverse("fb_browse") + query_helper(query, "", "filename,filetype")
                 return HttpResponseRedirect(redirect_url)
             except OSError:
@@ -332,15 +325,13 @@ def delete(request):
                 filebrowser_post_delete.send(sender=request, path=path, filename=filename)
                 # MESSAGE & REDIRECT
                 msg = _('The folder %s was successfully deleted.') % (filename.lower())
-                request.user.message_set.create(message=msg)
                 redirect_url = reverse("fb_browse") + query_helper(query, "", "filename,filetype")
                 return HttpResponseRedirect(redirect_url)
             except OSError:
                 # todo: define error message
                 msg = OSError
     
-    if msg:
-        request.user.message_set.create(message=msg)
+
     
     return render_to_response('filebrowser/index.html', {
         'dir': dir_name,
@@ -374,8 +365,7 @@ def rename(request):
         if path is None:
             msg = _('The requested Folder does not exist.')
         else:
-            msg = _('The requested File does not exist.')
-        request.user.message_set.create(message=msg)
+            msg = _('The requested File does not exist.')        
         return HttpResponseRedirect(reverse("fb_browse"))
     abs_path = os.path.join(MEDIA_ROOT, DIRECTORY, path)
     file_extension = os.path.splitext(filename)[1].lower()
@@ -402,7 +392,7 @@ def rename(request):
                 filebrowser_post_rename.send(sender=request, path=path, filename=filename, new_filename=new_filename)
                 # MESSAGE & REDIRECT
                 msg = _('Renaming was successful.')
-                request.user.message_set.create(message=msg)
+
                 redirect_url = reverse("fb_browse") + query_helper(query, "", "filename")
                 return HttpResponseRedirect(redirect_url)
             except OSError, (errno, strerror):
@@ -438,7 +428,7 @@ def edit(request):
             msg = _('The requested Folder does not exist.')
         else:
             msg = _('The requested File does not exist.')
-        request.user.message_set.create(message=msg)
+        
         return HttpResponseRedirect(reverse("fb_browse"))
     abs_path = os.path.join(MEDIA_ROOT, DIRECTORY, path)
     file_extension = os.path.splitext(filename)[1].lower()
@@ -450,7 +440,7 @@ def edit(request):
                 form.save()
                 # MESSAGE & REDIRECT
                 msg = _('Edit action was successful.')
-                request.user.message_set.create(message=msg)
+                
                 redirect_url = reverse("fb_browse") + query_helper(query, "", "filename")
                 return HttpResponseRedirect(redirect_url)
             except OSError, (errno, strerror):
@@ -484,7 +474,7 @@ def versions(request):
             msg = _('The requested Folder does not exist.')
         else:
             msg = _('The requested File does not exist.')
-        request.user.message_set.create(message=msg)
+        
         return HttpResponseRedirect(reverse("fb_browse"))
     abs_path = os.path.join(MEDIA_ROOT, DIRECTORY, path)
     
